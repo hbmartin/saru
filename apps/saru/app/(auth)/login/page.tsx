@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -8,11 +9,10 @@ import { toast } from '@/components/toast';
 import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
 
-// Client-side check for enabled providers
 const googleEnabled = process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true';
 const githubEnabled = process.env.NEXT_PUBLIC_GITHUB_ENABLED === 'true';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawRedirect = searchParams.get('redirect') ?? '';
@@ -39,7 +39,7 @@ export default function LoginPage() {
         setIsSuccessful(false);
         setIsSocialLoading(null);
       },
-      onSuccess: (ctx) => {
+      onSuccess: () => {
         setIsEmailLoading(false);
         setIsSuccessful(true);
         toast({
@@ -92,10 +92,10 @@ export default function LoginPage() {
             Sign in with your email and password
           </p>
         </div>
-        
+
         <div className="px-8">
-          <AuthForm 
-            action={handleEmailLogin} 
+          <AuthForm
+            action={handleEmailLogin}
             defaultEmail={email}
             showSocialLogins={true}
             googleEnabled={googleEnabled}
@@ -103,10 +103,8 @@ export default function LoginPage() {
             onSocialLogin={handleSocialLogin}
             isSocialLoading={isSocialLoading}
             isEmailLoading={isEmailLoading}
-          > 
-            <SubmitButton 
-              isSuccessful={isSuccessful}
-            >
+          >
+            <SubmitButton isSuccessful={isSuccessful}>
               Sign In
             </SubmitButton>
           </AuthForm>
@@ -123,5 +121,13 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
