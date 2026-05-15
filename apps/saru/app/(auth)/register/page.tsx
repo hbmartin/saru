@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
@@ -12,7 +13,7 @@ const googleEnabled = process.env.NEXT_PUBLIC_GOOGLE_ENABLED === 'true';
 const githubEnabled = process.env.NEXT_PUBLIC_GITHUB_ENABLED === 'true';
 const emailVerificationEnabled = process.env.NEXT_PUBLIC_EMAIL_VERIFY_ENABLED === 'true';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawRedirect = searchParams.get('redirect') ?? '';
@@ -38,9 +39,8 @@ export default function RegisterPage() {
       password,
       name,
     }, {
-      onRequest: () => {
-      },
-      onSuccess: (ctx) => {
+      onRequest: () => {},
+      onSuccess: () => {
         setIsEmailLoading(false);
         if (emailVerificationEnabled) {
           setIsSuccessful(false);
@@ -104,8 +104,8 @@ export default function RegisterPage() {
         </div>
 
         <div className="px-8 flex flex-col gap-6">
-          <AuthForm 
-            action={handleEmailSignup} 
+          <AuthForm
+            action={handleEmailSignup}
             defaultEmail={email}
             showSocialLogins={true}
             googleEnabled={googleEnabled}
@@ -114,14 +114,12 @@ export default function RegisterPage() {
             isSocialLoading={isSocialLoading}
             isEmailLoading={isEmailLoading}
           >
-            <SubmitButton
-              isSuccessful={isSuccessful}
-            >
+            <SubmitButton isSuccessful={isSuccessful}>
               Sign Up
             </SubmitButton>
           </AuthForm>
         </div>
-        
+
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-zinc-400">
             {'Already have an account? '}
@@ -136,5 +134,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }
