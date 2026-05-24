@@ -17,7 +17,6 @@ export const updateDocument = ({ session: _session, documentId: defaultDocumentI
         .string()
         .describe('The description of changes that need to be made'),
     }),
-    strict: true,
     execute: async ({ description }) => {
       const documentId = defaultDocumentId;
 

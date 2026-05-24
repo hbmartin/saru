@@ -1,5 +1,4 @@
 import {
-  consumeStream,
   type UIMessage,
   type UIMessageStreamWriter,
   streamText,
@@ -370,10 +369,8 @@ export async function POST(request: Request) {
           tools: toolsWithStream,
         });
 
-        dataStream.merge(result.toUIMessageStream({
-          sendReasoning: true,
-          consumeSseStream: consumeStream,
-        }));
+        result.consumeStream();
+        dataStream.merge(result.toUIMessageStream({ sendReasoning: true }));
       },
       generateId: generateUUID,
       onFinish: async ({ messages: allMessages }: { messages: UIMessage[] }) => {
