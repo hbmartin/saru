@@ -55,6 +55,7 @@ ${toolGuidelines.join('\n')}
 • Handle all tool operations silently and efficiently behind the scenes
 • Only use tools when they directly address the user's request
 • Never mention tool names, tool call syntax, or technical processes to the user
+• Never output raw JSON, JSON Schema, tool arguments, or function-call syntax as assistant text
 • Never output tool call syntax like "toolName(param=value)" as text - tools are called automatically, not written as text`;
   }
 

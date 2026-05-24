@@ -47,6 +47,7 @@ export const webSearch = ({ session }: WebSearchProps) => {
   const baseTool = tool({
     description: 'Performs a real-time web search using the Tavily API and returns structured search results.',
     inputSchema: searchParameters,
+    strict: true,
   });
 
   // Then add execute function manually

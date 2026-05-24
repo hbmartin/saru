@@ -31,6 +31,7 @@ export const streamingDocument = ({ session, dataStream, documentId }: Streaming
         .optional()
         .describe('Optional web sources/snippets to ground the writing.'),
     }),
+    strict: true,
     execute: async ({ title, context, sources }) => {
       try {
         const targetDocumentId = documentId;

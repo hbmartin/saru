@@ -1,4 +1,5 @@
 import {
+  consumeStream,
   type UIMessage,
   type UIMessageStreamWriter,
   streamText,
@@ -8,6 +9,7 @@ import {
   createUIMessageStream,
   JsonToSseTransformStream,
 } from 'ai';
+import type { GroqLanguageModelOptions } from '@ai-sdk/groq';
 import { systemPrompt } from '@/lib/ai/prompts';
 import {
   deleteChatById,
@@ -38,6 +40,13 @@ import { webSearch } from '@/lib/ai/tools/web-search';
 import type { ActiveDocumentId, ChatContextPayload, ChatAiOptions } from '@/types/chat';
 
 export const maxDuration = 60;
+
+const groqToolCallOptions = {
+  groq: {
+    parallelToolCalls: false,
+    structuredOutputs: false,
+  } satisfies GroqLanguageModelOptions,
+};
 
 async function createEnhancedSystemPrompt({
   selectedChatModel,
@@ -356,13 +365,16 @@ export async function POST(request: Request) {
           system: dynamicSystemPrompt,
           messages: convertToModelMessages(messages),
           stopWhen: stepCountIs(2),
-          experimental_activeTools: activeToolsList,
+          activeTools: activeToolsList,
+          providerOptions: groqToolCallOptions,
           experimental_transform: smoothStream({ chunking: 'word' }),
           tools: toolsWithStream,
         });
 
-        result.consumeStream();
-        dataStream.merge(result.toUIMessageStream({ sendReasoning: true }));
+        dataStream.merge(result.toUIMessageStream({
+          sendReasoning: true,
+          consumeSseStream: consumeStream,
+        }));
       },
       generateId: generateUUID,
       onFinish: async ({ messages: allMessages }: { messages: UIMessage[] }) => {
