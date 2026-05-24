@@ -9,7 +9,6 @@ import {
   createUIMessageStream,
   JsonToSseTransformStream,
 } from 'ai';
-import type { GroqLanguageModelOptions } from '@ai-sdk/groq';
 import { systemPrompt } from '@/lib/ai/prompts';
 import {
   deleteChatById,
@@ -45,7 +44,7 @@ const groqToolCallOptions = {
   groq: {
     parallelToolCalls: false,
     structuredOutputs: false,
-  } satisfies GroqLanguageModelOptions,
+  },
 };
 
 async function createEnhancedSystemPrompt({
